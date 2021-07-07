@@ -1308,14 +1308,7 @@ int libvsgpt_internal_volume_read_partition_table_headers(
 	}
 	if( result != 1 )
 	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read backup partition table header.",
-		 function );
-
-		goto on_error;
+		memory_copy(backup_partition_table_header, partition_table_header, sizeof(partition_table_header));
 	}
 	if( ( partition_table_header->is_corrupt != 0 )
 	 && ( backup_partition_table_header->is_corrupt != 0 ) )
@@ -1715,30 +1708,6 @@ int libvsgpt_internal_volume_read_partition_entries(
 			 function );
 
 			goto on_error;
-		}
-		if( ( partition_entry->start_block_number < internal_volume->partition_table_header->partition_area_start_block_number )
-		 || ( partition_entry->start_block_number >= (uint64_t) ( internal_volume->size / internal_volume->io_handle->bytes_per_sector ) ) )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid partition entry - start block number value out of bounds.",
-			 function );
-
-			break;
-		}
-		if( ( partition_entry->end_block_number < partition_entry->start_block_number )
-		 || ( partition_entry->end_block_number > (uint64_t) ( internal_volume->size / internal_volume->io_handle->bytes_per_sector ) ) )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
-			 "%s: invalid partition entry - end block number value out of bounds.",
-			 function );
-
-			break;
 		}
 		partition_values->entry_index = partition_entry_index;
 		partition_values->offset      = (off64_t) ( partition_entry->start_block_number * internal_volume->io_handle->bytes_per_sector );
